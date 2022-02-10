@@ -1,0 +1,54 @@
+Incluir esses COD no software que irá ser atualizado.
+
+uses
+   ShellApi, StdCtrls, IniFiles;
+
+################################
+
+procedure TfrmPrincipal.FormCreate(Sender: TObject);
+var
+  ini : TIniFile;
+  Local, Servidor : String;
+  DataLocal, DataServidor : TDateTime;
+begin
+
+  if not ((UpperCase(UsuarioLogadoWindows) = 'LUIZ.HENRIQUE') or (UpperCase(UsuarioLogadoWindows) = 'DULIO.CESAR')) then
+  begin
+   if not (Application.ExeName = 'C:\Aplicativos\Auxiliar.exe')  then
+    begin
+      ShowMessage('Este programa não pode ser executado a partir desta pasta.'+#13+'Copie ele para pasta (C:\Aplicativos) em sua máquina.');
+      Application.Terminate;
+    end;
+  end;
+
+  ini      := TIniFile.Create(GetCaminhoIniFile);
+  Local    := ini.ReadString('ARQUIVOS', 'dirLocal', '') + 'Auxiliar.exe';
+  Servidor := ini.ReadString('ARQUIVOS', 'dirRemoto', '') + 'Auxiliar.exe';
+
+  if not FileExists(Servidor) then
+  begin
+    Application.MessageBox(Pchar('O arquivo Remoto não foi encontrado.'+#13+Servidor), 'Atenção', MB_OK+MB_ICONEXCLAMATION);
+  end else
+  begin
+    DataLocal    := FileDateToDateTime(FileAge(Local));
+    DataServidor := FileDateToDateTime(FileAge(Servidor));
+
+    if DataLocal <> DataServidor then
+    begin
+    ini.WriteString('ARQUIVOS', 'exec', 'Auxiliar.exe');
+    frmPrincipal.Hide;
+    ShellExecute(Handle,'open',pchar('C:\Aplicativos\Atualizador.exe'),nil,nil,sw_show);
+    Application.Terminate;
+    end;
+  end;
+end;
+
+
+
+##########################
+
+
+function TfrmPrincipal.GetCaminhoIniFile: String;
+begin
+  result:= ExtractFileDir(Application.ExeName)+'\ConfigArquivos.ini';
+end;
