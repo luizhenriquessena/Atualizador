@@ -26,7 +26,7 @@ type
 
 var
   frmPrincipal: TfrmPrincipal;
-  execFechar, Local, Servidor : String;
+  execFechar, Local, Servidor, Servidor2 : String;
 
 implementation
 
@@ -98,8 +98,18 @@ begin
   ini      := TIniFile.Create(GetCaminhoIniFile);
   Local    := ini.ReadString('ARQUIVOS', 'dirLocal', '') + ini.ReadString('ARQUIVOS', 'exec', '');
   Servidor := ini.ReadString('ARQUIVOS', 'dirRemoto', '') + ini.ReadString('ARQUIVOS', 'exec', '');
+  Servidor2 := ini.ReadString('ARQUIVOS', 'dirRemoto2', '') + ini.ReadString('ARQUIVOS', 'exec', '');
 
-  CopiarNovaVersao(Local, Servidor);
+
+  if FileExists(Servidor) then
+  begin
+    CopiarNovaVersao(Local, Servidor);
+    ShowMessage('1');
+  end else
+  begin
+    ShowMessage('2');
+    CopiarNovaVersao(Local, Servidor2);
+  end;
 end;
 
 end.
