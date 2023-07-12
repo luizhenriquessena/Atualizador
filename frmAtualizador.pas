@@ -104,10 +104,8 @@ begin
   if FileExists(Servidor) then
   begin
     CopiarNovaVersao(Local, Servidor);
-    ShowMessage('1');
   end else
   begin
-    ShowMessage('2');
     CopiarNovaVersao(Local, Servidor2);
   end;
 end;
